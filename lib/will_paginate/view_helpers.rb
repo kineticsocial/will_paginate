@@ -32,7 +32,8 @@ module WillPaginate
       :params         => nil,
       :renderer       => 'WillPaginate::LinkRenderer',
       :page_links     => true,
-      :container      => true
+      :container      => true,
+      :never_hide     => false # If you never want to hide the pagination links, set this to true
     }
     mattr_reader :pagination_options
 
@@ -94,10 +95,12 @@ module WillPaginate
         raise ArgumentError, "The #{collection_name} variable appears to be empty. Did you " +
           "forget to pass the collection object for will_paginate?" unless collection
       end
-      # early exit if there is nothing to render
-      return nil unless WillPaginate::ViewHelpers.total_pages_for_collection(collection) > 1
-      
+
       options = options.symbolize_keys.reverse_merge WillPaginate::ViewHelpers.pagination_options
+
+      # early exit if there is nothing to render
+      return nil unless WillPaginate::ViewHelpers.total_pages_for_collection(collection) > 1 || options[:never_hide]
+
       if options[:prev_label]
         WillPaginate::Deprecation::warn(":prev_label view parameter is now :previous_label; the old name has been deprecated", caller)
         options[:previous_label] = options.delete(:prev_label)
