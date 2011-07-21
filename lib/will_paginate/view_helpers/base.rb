@@ -39,10 +39,10 @@ module WillPaginate
       #   <div class="pagination" id="wp_posts"> ... </div>
       #
       def will_paginate(collection, options = {})
-        # early exit if there is nothing to render
-        return nil unless collection.total_pages > 1
-        
         options = WillPaginate::ViewHelpers.pagination_options.merge(options)
+
+        # early exit if there is nothing to render
+        return nil unless collection.total_pages > 1 || options[:never_hide]
         
         if options[:prev_label]
           WillPaginate::Deprecation::warn(":prev_label view parameter is now :previous_label; the old name has been deprecated.")

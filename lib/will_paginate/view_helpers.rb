@@ -36,7 +36,8 @@ module WillPaginate
       :params         => nil,
       :renderer       => 'WillPaginate::ViewHelpers::LinkRenderer',
       :page_links     => true,
-      :container      => true
+      :container      => true,
+      :never_hide     => false # If you never want to hide the pagination links, set this to true
     }
   end
 end

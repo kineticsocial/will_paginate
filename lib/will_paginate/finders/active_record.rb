@@ -106,7 +106,9 @@ module WillPaginate::Finders
       # we may have to scope ...
       counter = Proc.new { count(count_options) }
 
-      count = if finder.index('find_') == 0 and klass.respond_to?(scoper = finder.sub('find', 'with'))
+      count = if self.arel.to_sql =~ /.*SQL_CALC_FOUND_ROWS.*/i # MYSQL and SQL_CALC_FOUND_ROWS set -- get the data from the DB
+                count_by_sql('SELECT FOUND_ROWS()')
+              elsif finder.index('find_') == 0 and klass.respond_to?(scoper = finder.sub('find', 'with'))
                 # scope_out adds a 'with_finder' method which acts like with_scope, if it's present
                 # then execute the count with the scoping provided by the with_finder
                 send(scoper, &counter)
